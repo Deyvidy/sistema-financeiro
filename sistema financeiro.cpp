@@ -1,17 +1,3 @@
-/*Considera uma empresa que deseja contador seu caixa com a seguintes caracteristicas: 
-Conta:{int: codigo, string: desc}
-Historico:{ int: Codigo, String: descri??o, Char: tipo (C=credito'receber', D=debito'pagar')}
-Movimento:{ data: dia, mes, ano, 'conta:Conta= struct', 'struct=historico:historico', valor,String: complemento}
-Sabendo que a movimenta??o do dia se resume a 100 movimento, fa?a:
-1- cadastrar conta, historico 
-1-1 - listar
-2 cadastra movimenta??o
-3- lista caixa do dia 
-4- lista somente o movimento de uma conta especifica
-5- lista somente o movimento de um historico especifico
-obs: itens 4 e 5 devera 
-*/
-     
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -50,16 +36,17 @@ typedef struct MOVIMENTACAO_CLIENTE{
 void menu ( );
 void cadastraConta ( int codigo, int pos );
 void realizarOperacoes ( );
-void login ( );
+void cadastraHistorico ( );
 float processarOpercao ( int pos, int valor, char tipoDaOpercao );
-void ExibirContaEspecifica ( );
+void exibirContaEspecifica ( );
 void consultar ( );
+void exibirHistorico ( );
 void exibir ( int pos );
 int verificarPosicao ( );
 int verificarCod (int codigo);
    
 // variaveis globais (contador) para saber o tamanho do vetor  (opercao) par saber quantas operacoes foram feitas;  
-int contador=0, operacao=0;
+int contador=0, operacao=0, his=0,x=0;
 
     
 int main ( ) {
@@ -72,7 +59,7 @@ int main ( ) {
 void menu ( ) {
     int op, posicao, verificaCodigo, confirmacao, conta;
     char opcoes;
-    printf("[1]\t Cadastra conta\n[2]\t Entra na conta\n[3]\t Listar todas contas\n[4]\t Exibir Conta expecifica\n");
+    printf("[1]\t Cadastra conta\n[2]\t Entra na conta\n[3]\t Listar todas contas\n[4]\t Exibir Conta expecifica\n[5]\t Lista Historico da conta\n");
     scanf("%s",&opcoes);
          
     switch ( opcoes ) {
@@ -95,14 +82,17 @@ void menu ( ) {
             break;
         }
         case '2' : 
-            login (  );
+            cadastraHistorico (  );
             break; 
         case '3' :
             consultar( );
             break;
         case '4' :
-			 ExibirContaEspecifica ( );
-			 break;   
+			 exibirContaEspecifica ( );
+			 break;
+		case '5' :
+			exibirHistorico ( );
+			break;	    
         default :
             printf("opcao invalida\n");
             break;
@@ -136,9 +126,41 @@ void cadastraConta( int codigo, int pos ) {
     menu ( );       
 }
 
+
+void exibirContaEspecifica ( ) {
+	int pos = 0, conta;
+ 
+    printf("\nEntre com o codigo da conta\n");
+    scanf("%d",&conta);
+ 
+    system("cls");
     
-void login (  ) {
-    int conta, validacao,pos;
+    for( pos = 0; pos < contador; pos++ ) {
+    	if( conta == movimentacao[pos].client[pos].codigo ) {
+    		exibir ( pos );
+		}
+	}
+    system ("pause");
+    system("cls");
+    menu( );
+}
+
+
+//exibir contas cadastradas 
+void consultar( ) { 
+     int pos=0; 
+    for ( pos = 0; pos < contador; pos++ ) {
+    	exibir ( pos );
+    }
+    
+    system ("pause");
+    system("cls");
+    menu( );
+}
+
+    
+void cadastraHistorico (  ) {
+    int conta, validacao, pos, i;
     char op, resp;
     float valor, valorOp;
        
@@ -149,27 +171,31 @@ void login (  ) {
         if ( movimentacao[pos].client[pos].codigo == conta ) { 
             if ( movimentacao[pos].status == 1 ) {
             	exibir ( pos );
-
+				
                 getchar();
   
                 printf("\nDeseja fazer uma operacao S/N:");
                 scanf("%c",&resp);
   
                 if ( ( resp == 'S' ) || ( resp == 's' ) ) {
+                    //for ( i = 0; i < 1; i++ ) {
+                    	printf("Codigo da operacao: \n");
+	                    scanf("%d",&movimentacao[pos].historio[his].codigo);
+	                       
+	                    printf("Valor:\n");
+	                    scanf("%f",&valor);
+	                      
+	                    printf("[c]\tCredito\n[d]\tDebito\n");
+	                    scanf("%s",&op);
+	                       
+	                    printf("Descri??o:\n");
+	                    scanf("%s",&movimentacao[pos].historio[his].descricao);
+	                    
+	                    valorOp=processarOpercao ( pos, valor, op ); 
+					//} 
+                    
                      
-                    printf("Codigo da operacao: \n");
-                    scanf("%d",&movimentacao[pos].historio[pos].codigo);
-                       
-                    printf("Valor:\n");
-                    scanf("%f",&valor);
-                      
-                    printf("[c]\tCredito\n[d]\tDebito\n");
-                    scanf("%s",&op);
-                       
-                    printf("Descri??o:\n");
-                    scanf("%s",&movimentacao[pos].historio[pos].descricao);
-                     
-                    valorOp=processarOpercao ( pos, valor, op ); 
+                    
                      
                     printf("\nOpercao feita com sucesso\n");
                     break;
@@ -189,11 +215,12 @@ void login (  ) {
          
     system("pause");
     system("cls");
+    his++;
 }  
 
 
-void ExibirContaEspecifica ( ) {
-	int pos = 0, conta;
+void exibirHistorico ( ) {
+	int pos = 0, conta, x, i;
  
     printf("\nEntre com o codigo da conta\n");
     scanf("%d",&conta);
@@ -203,24 +230,21 @@ void ExibirContaEspecifica ( ) {
     for( pos = 0; pos < contador; pos++ ) {
     	if( conta == movimentacao[pos].client[pos].codigo ) {
     		exibir ( pos );
+    		x=pos;
+    		
 		}
+		
+	for ( i = 0; i < his; i++ ) {
+    	printf("Codigo da operacao: %d \n",movimentacao[pos].historio[i].codigo);
+           
+        printf("Descricao: %s \n",movimentacao[pos].historio[i].descricao);
 	}
+}
     system ("pause");
     system("cls");
     menu( );
 }
 
-//exibir contas cadastradas 
-void consultar( ) { 
-     int pos=0; 
-    for ( pos = 0; pos < contador; pos++ ) {
-    	exibir ( pos );
-    }
-    
-    system ("pause");
-    system("cls");
-    menu( );
-}
 
 // funcao responsavel de printar as informacoes da conta
 void exibir ( int pos ) {
