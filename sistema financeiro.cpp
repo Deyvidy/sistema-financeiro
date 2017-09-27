@@ -1,17 +1,3 @@
-/*Considera uma empresa que deseja contador seu caixa com a seguintes caracteristicas: 
-Conta:{int: codigo, string: desc}
-Historico:{ int: Codigo, String: descri??o, Char: tipo (C=credito'receber', D=debito'pagar')}
-Movimento:{ data: dia, mes, ano, 'conta:Conta= struct', 'struct=historico:historico', valor,String: complemento}
-Sabendo que a movimenta??o do dia se resume a 100 movimento, fa?a:
-1- cadastrar conta, historico 
-1-1 - listar
-2 cadastra movimenta??o
-3- lista caixa do dia 
-4- lista somente o movimento de uma conta especifica
-5- lista somente o movimento de um historico especifico
-obs: itens 4 e 5 devera 
-*/
-     
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -21,6 +7,7 @@ obs: itens 4 e 5 devera
 #define TAMD 5 //Tamanho do vetor da struct Data
 #define TAMH 5 //Tamanho do vetor da struct Historico
 #define TAMM 5 //Tamanho do vetor da struct Movimentaca
+#define TAMDIA 1
  
       
 typedef struct CONTA {
@@ -65,6 +52,9 @@ Movimentacao movimentacao [TAMM];
  
 //Declara??o das fun?oes      
 void menu ( );
+void menuExibir ( );
+void menuExcluir ( );
+void menuAlterar ( );
  
 void cadastraConta ( int codigo, int i );
 void excluirContaCliente ( );
@@ -95,14 +85,17 @@ int verificarCod ( int codigo );
 // variaveis globais (contador) para saber o tamanho do vetor  (opercao) par saber quantas operacoes foram feitas;  
 int contador = 0, operacao = 0, his = 0, statusConta=0, movi=0;
  
-     
+//=============================MENU========================================    
 int main ( ) {
      int op, posicao, posicaoH, verificaCodigo, confirmacao, confirmacaoH, conta;
     char opcoes;
      
     do { 
-        printf("[1]\t Cadastra conta\n[2]\t Cadastra historico\n[3]\t Entra na conta\n[4]\t Exibir Conta expecifica\n[5]\t Exibir todas as contas\n[6]\t Excluir conta\n");
-        printf("[7]\t Exibir historicos\n[8]\t Exibir historico expecifico\n[9]\t Listar todas as movimentacoes\n");
+        printf("[1]\t Cadastra conta\n[2]\t Cadastra historico\n[3]\t Entra na conta\n");
+        printf("[4]\t Exibir\n");
+        printf("[5]\t Alterar\n");
+        printf("[6]\t Excluir\n");
+        printf("[0]\t Sair\n");
         scanf("%s",&opcoes);
           
     switch ( opcoes ) {
@@ -146,22 +139,17 @@ int main ( ) {
             login ( );              
             break;
         case '4' :
-            exibirContaEspecifica ( );
+            menuExibir ( );
             break;
         case '5' :
-            consultarContaCliente ( );              
+            menuAlterar ( );              
             break;
         case '6' :
-            excluirContaCliente ( );        
+            menuExcluir ( );      
             break;
-        case '7' : 
-            consultarHistorico ( ); 
-            break;
-        case '8' :
-            historicoExpecifico( );
-            break;
-        case '9' :
-            listarTodasOpercaoes ( );
+        case '0' :
+            printf("Bye!!\n");
+            system("");
             break;          
         default :
             printf("opcao invalida\n");
@@ -169,7 +157,7 @@ int main ( ) {
         }
         system("pause");
         system("cls");
-        }while( opcoes !='8' ); 
+        }while( opcoes !='7' ); 
 }
  
       
@@ -212,6 +200,114 @@ void menu ( ) {
      
 }
  
+//==============================EXIBIR====================================
+void menuExibir ( ) {
+    char opcoes;
+     
+    do { 
+        printf("[1]\t Exibir todas Contas\n[2]\t Exibir Conta especifica\n");
+        printf("[3]\t Exibir todos historicos\n[4]\t Exibir historico especifico\n");
+        printf("[5]\t Exibir todas operacoes\n");
+        printf("[0]\t Voltar\n");
+        scanf("%s",&opcoes);
+          
+    switch ( opcoes ) {
+        case '1' :
+            consultarContaCliente ( );
+            break;
+        case '2' :
+            exibirContaEspecifica ( );             
+            break;
+        case '3' :
+            consultarHistorico ( ); 
+			break;
+		case '4' :
+			historicoExpecifico( );
+			break;	        
+		case '5' :
+			listarTodasOpercaoes ( );
+			break;
+		case '0' :
+			main( );
+			break;			
+        default :
+            printf("opcao invalida\n");
+            break;
+        }
+        system("pause");
+        system("cls");
+        }while( opcoes !='5' ); 
+}
+ 
+ 
+//===============================EXCLUIR===================================
+void menuExcluir ( ) {
+	char opcoes;
+     
+    do { 
+        printf("[1]\t Excluir Conta\n");
+        printf("[2]\t Excluir historico\n");
+        printf("[3]\t Excluir operacoes\n");
+        printf("[0]\t Voltar\n");
+        scanf("%s",&opcoes);
+          
+    switch ( opcoes ) {
+        case '1' :
+            excluirContaCliente( );
+            break;
+        case '2' :
+            //exibirContaEspecifica ( );             
+            break;
+        case '3' :
+            //consultarHistorico ( ); 
+			break;
+		case '0' :
+			main ( );
+			break;	        
+        default :
+            printf("opcao invalida\n");
+            break;
+        }
+        system("pause");
+        system("cls");
+        }while( opcoes !='5' ); 
+}
+ 
+//==================================ALTERAR=================================
+void menuAlterar ( ) {
+    char opcoes;
+     
+    do { 
+        printf("[1]\t Alterar Conta\n");
+        printf("[2]\t Alterar Historico\n");
+        printf("[3]\t Alterar Operacoes\n");
+        printf("[0]\t Volta\n");
+        scanf("%s",&opcoes);
+          
+    switch ( opcoes ) {
+        case '1' :
+            //consultarContaCliente ( );
+            break;
+        case '2' :
+            //exibirContaEspecifica ( );             
+            break;
+        case '3' :
+            //consultarHistorico ( ); 
+			break;
+		case '0' :
+			main( );
+			break;	        
+        default :
+            printf("opcao invalida\n");
+            break;
+        }
+        system("pause");
+        system("cls");
+        }while( opcoes !='5' ); 
+}
+ 
+//==========================================================================
+  
       
 void cadastraConta( int codigo, int i ) {
     system("cls");
@@ -259,7 +355,7 @@ void exibirContaEspecifica ( ) {
     }
     system ("pause");
     system("cls");
-    main( );
+    menuExibir ( );
 }
  
  
@@ -274,7 +370,7 @@ void consultarContaCliente( ) {
      
     system ("pause");
     system("cls");
-    main( );
+    menuExibir ( );
 }
  
  
@@ -395,8 +491,8 @@ void consultarHistorico( ) {
     if ( ok != 1 ) {
         printf("Sem historicos cadastrados\n");
     }
+    menuExibir ( );
 }
- 
  
  
 void historicoExpecifico( ) { 
@@ -416,6 +512,7 @@ void historicoExpecifico( ) {
     if ( ok != 1 ) {
         printf("Historico nao encontrado\n");
     }
+    menuExibir ( );
 }
  
  
@@ -461,9 +558,9 @@ void login ( ) {
  
 void realizarOperacoes  ( ) {
     system("cls"); 
-    int codigoOperacao;
-    int operacaoEncontrada = 0;
-    float valorMovimentacao;
+    int codigoOperacao, dia, i,j, ok=0;
+    int operacaoEncontrada = 0;float valorMovimentacao;
+    
     printf("Historicos:\n");
     consultarHistorico( );
      
@@ -491,12 +588,11 @@ void realizarOperacoes  ( ) {
     movimentacao[movi].status = 1;
       
     movi++;
- 
-    printf("\nOpercao feita com sucesso!!\n");
+ 	printf("\nOpercao feita com sucesso!!\n");
          
     system("pause"); 
     system("cls");       
-    menu();
+    menu( );
 }
  
  
@@ -559,7 +655,7 @@ void listarTodasOpercaoes ( ) {
     }
     system("pause");
     system("cls");
-    main( );
+    menuExibir ( );
  
 }
  
