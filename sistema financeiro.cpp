@@ -1,35 +1,30 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-  
        
 #define TAMC 5 //Tamanho do vetor da struct Cliente
 #define TAMD 5 //Tamanho do vetor da struct Data
 #define TAMH 5 //Tamanho do vetor da struct Historico
 #define TAMM 5 //Tamanho do vetor da struct Movimentaca
-#define TAMDIA 1
-  
+#define TAMDIA 1  
        
 typedef struct CONTA {
     int codigo;
     char descricao[100];
     int status;
 }Client;
-     
-       
+            
 typedef struct HISTORICO {
     int codigo;
     char descricao[100];
     char tipoDeTransacao;
     int status;
 }Historico;
-      
-       
+          
 typedef struct DATA{
     int dia, mes, ano;
 }Data;
-     
-       
+          
 typedef struct MOVIMENTACAO{
     Data data;
     Client client;
@@ -38,7 +33,6 @@ typedef struct MOVIMENTACAO{
     char complemento[100];
     int status;
 }Movimentacao;
-   
    
 //Declara??o das structs 
 Client client [TAMC];
@@ -49,7 +43,6 @@ Data data [TAMD];
   
 Movimentacao movimentacao [TAMM];   
   
-  
 //Declara??o das fun?oes      
 void menu ( );
 void menuExibir ( );
@@ -58,10 +51,12 @@ void menuAlterar ( );
   
 void cadastraConta ( int codigo, int i );
 void excluirContaCliente ( );
+void alterarConta ( );
   
 void cadastraHistorico ( int codigo, int j );
 void historicoExpecifico( );
 void excluirHistorico( );
+void alterarHistorico ( );
   
 void realizarOperacoes ( );
 void listarMovimentacoes ( );
@@ -162,8 +157,7 @@ int main ( ) {
     system("pause");
     system("cls");
 }
-  
-       
+     
 void menu ( ) {
     system("cls");
       
@@ -463,7 +457,7 @@ void excluirHistorico( ) {
   
 }
  
-void excluirOperacao( ) {
+void excluirOperacao( ) { // tem bug precisa arrumar
     int cod, i, j, ok=0;
     char resp;
   
@@ -541,12 +535,13 @@ void menuAlterar ( ) {
            
     switch ( opcoes ) {
         case '1' :
-            //consultarContaCliente ( );
+            alterarConta ( );
             break;
         case '2' :
-            //exibirContaEspecifica ( );             
+            alterarHistorico ( );             
             break;
         case '3' :
+        	printf("Opcao indisponivel\n");
             //consultarHistorico ( ); 
             break;
         case '0' :
@@ -560,7 +555,211 @@ void menuAlterar ( ) {
         system("cls");
         }while( opcoes !='5' ); 
 }
-  
+ 
+void alterarConta ( ) {
+	int i, cod, confirmacao, ok = 0, codigo;
+    char resp;
+ 
+    printf("\nCodigo da conta: \n");
+    scanf("%d",&cod );
+    
+    for( i = 0; i < contador; i++ ) { 
+        if ( client[i].codigo == cod ) { 
+            
+            exibir ( i );
+            
+            getchar();
+
+            printf("\nDeseja realmente Alterar? [s]/[n]:\n");
+            scanf("%c",&resp);
+
+            if ( ( resp == 'S' ) || ( resp == 's' ) ) {
+            	
+            	printf("Digite as novas informacoes: \n");
+            	
+            	printf("Codigo da Conta: \n");
+            	while(ok != 1) {
+            	scanf("%d",&codigo);                    
+                confirmacao = verificarCod( codigo );
+                    
+	                if( confirmacao == 1 ) {
+	                	ok = 1;
+	                	client[i].codigo = codigo;
+					}
+					if (ok != 1){
+						printf("\nCodigo ja existente\n");
+					}
+				}
+                                
+                printf("\nNova Descricao: \n");
+                fflush(stdin);
+            	gets(client[i].descricao);
+            	
+                printf("\nAlteracao feita com sucesso\n");
+                break;
+            }
+            else {
+                if ( ( resp == 'N' ) || ( resp == 'n' ) ) {
+                    printf("Alteracao cancelada!\n");
+                    break;
+                }
+            }
+        }
+        if ( i > contador )
+            printf("\nCodigo nao encontrado\n");
+    }
+    system("pause");
+    system("cls");
+}
+
+void alterarHistorico ( ) {
+	int i, cod, confirmacao, ok = 0, codigo;
+    char resp, op;
+ 
+    printf("\nCodigo do Historico: \n");
+    scanf("%d",&cod );
+    
+    for( i = 0; i < his; i++ ) { 
+        if ( historico[i].codigo == cod ) { 
+            
+            exibirHistorico ( i );
+            
+            getchar();
+
+            printf("\nDeseja realmente Alterar? [s]/[n]:\n");
+            scanf("%c",&resp);
+
+            if ( ( resp == 'S' ) || ( resp == 's' ) ) {
+            	
+            	printf("Digite as novas informacoes: \n");
+            	
+            	printf("Codigo do Historico: \n");
+            	while(ok != 1) {
+            	scanf("%d",&codigo);                    
+                confirmacao = verificarCodHistorico( codigo );
+                    
+	                if( confirmacao == 1 ) {
+	                	ok = 1;
+	                	client[i].codigo = codigo;
+					}
+					if (ok != 1){
+						printf("\nCodigo ja existente\n");
+					}
+				}
+                                
+                printf("\nNova Descricao: \n");
+                fflush(stdin);
+            	gets(historico[i].descricao);
+            	
+            	printf("[c]\tCredito\n[d]\tDebito\n");
+     
+			    while( 1 ) {
+			        scanf("%s",&op);
+			        setbuf(stdin, NULL);
+			        if( op == 'C' || op == 'c' ) {
+			            historico[i].tipoDeTransacao = 'c';
+			            break;
+			        }
+			        if( op == 'D' || op == 'd' ) {
+			            historico[i].tipoDeTransacao = 'd';
+			            break;
+			        }
+			        else{
+			            printf("Operacao invalida\n");
+			        }
+			        }
+            	
+                printf("\nAlteracao feita com sucesso\n");
+                break;
+            }
+            else {
+                if ( ( resp == 'N' ) || ( resp == 'n' ) ) {
+                    printf("Alteracao cancelada!\n");
+                    break;
+                }
+            }
+        }
+        if ( i > his )
+            printf("\nCodigo nao encontrado\n");
+    }
+    system("pause");
+    system("cls");
+}
+
+/*void alterarOperacao ( ) {
+	int i, cod, confirmacao, ok = 0, codigo;
+    char resp, op;
+ 
+    printf("\nCodigo da operacao: \n");
+    scanf("%d",&cod );
+    
+    for( i = 0; i < movi; i++ ) { 
+        if ( historico[i].codigo == cod ) { 
+            
+            exibirHistorico ( i );
+            
+            getchar();
+
+            printf("\nDeseja realmente Alterar? [s]/[n]:\n");
+            scanf("%c",&resp);
+
+            if ( ( resp == 'S' ) || ( resp == 's' ) ) {
+            	
+            	printf("Digite as novas informacoes: \n");
+            	
+            	printf("Codigo do Historico: \n");
+            	while(ok != 1) {
+            	scanf("%d",&codigo);                    
+                confirmacao = verificarCodHistorico( codigo );
+                    
+	                if( confirmacao == 1 ) {
+	                	ok = 1;
+	                	client[i].codigo = codigo;
+					}
+					if (ok != 1){
+						printf("\nCodigo ja existente\n");
+					}
+				}
+                                
+                printf("\nNova Descricao: \n");
+                fflush(stdin);
+            	gets(historico[i].descricao);
+            	
+            	printf("[c]\tCredito\n[d]\tDebito\n");
+     
+			    while( 1 ) {
+			        scanf("%s",&op);
+			        setbuf(stdin, NULL);
+			        if( op == 'C' || op == 'c' ) {
+			            historico[i].tipoDeTransacao = 'c';
+			            break;
+			        }
+			        if( op == 'D' || op == 'd' ) {
+			            historico[i].tipoDeTransacao = 'd';
+			            break;
+			        }
+			        else{
+			            printf("Operacao invalida\n");
+			        }
+			        }
+            	
+                printf("\nAlteracao feita com sucesso\n");
+                break;
+            }
+            else {
+                if ( ( resp == 'N' ) || ( resp == 'n' ) ) {
+                    printf("Alteracao cancelada!\n");
+                    break;
+                }
+            }
+        }
+        if ( i > movi )
+            printf("\nOperacao nao encontrado\n");
+    }
+    system("pause");
+    system("cls");
+}*/
+
 //==========================================================================
         
 void cadastraConta( int codigo, int i ) {
@@ -630,35 +829,7 @@ void cadastraHistorico ( int codigo, int j ) {
     system("cls");
     main( );
 }  
-  
-void login ( ) {
-    system("cls");
-    int codigoDaConta;
-    int i;
-      
-    printf("Digite sua conta \n\n");
-    scanf("%d", &codigoDaConta);
-      
-    if( contador > 0 ) {
-        for( i = 0; i < contador; i++ ) {
-            if( client[i].codigo == codigoDaConta ) {
-                statusConta = client[i].codigo;
-                menu ( );
-                break;
-            }
-        }
-        if( statusConta == 0 ) {
-            printf(" Conta nao encontrada \n \n ");
-            system("pause");
-            login ( );
-            }
-        }
-   
-    else {
-        printf(" Nao  possui nenhuma conta cadastrada \n \n");
-    }
-}
-  
+
 void realizarOperacoes  ( ) {
     system("cls"); 
     int codigoOperacao, dia, i,j, ok=0;
@@ -699,6 +870,34 @@ void realizarOperacoes  ( ) {
     system("pause"); 
     system("cls");       
     menu( );
+}
+ 
+void login ( ) {
+    system("cls");
+    int codigoDaConta;
+    int i;
+      
+    printf("Digite sua conta \n\n");
+    scanf("%d", &codigoDaConta);
+      
+    if( contador > 0 ) {
+        for( i = 0; i < contador; i++ ) {
+            if( client[i].codigo == codigoDaConta ) {
+                statusConta = client[i].codigo;
+                menu ( );
+                break;
+            }
+        }
+        if( statusConta == 0 ) {
+            printf(" Conta nao encontrada \n \n ");
+            system("pause");
+            login ( );
+            }
+        }
+   
+    else {
+        printf(" Nao  possui nenhuma conta cadastrada \n \n");
+    }
 }
    
 void listarMovimentacoes ( ) {
