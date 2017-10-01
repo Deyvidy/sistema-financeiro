@@ -6,7 +6,7 @@
 #define TAMD 5 //Tamanho do vetor da struct Data
 #define TAMH 5 //Tamanho do vetor da struct Historico
 #define TAMM 5 //Tamanho do vetor da struct Movimentaca
-#define TAMDIA 1  
+#define QTDMAXDIA 2  
        
 typedef struct CONTA {
     int codigo;
@@ -59,6 +59,9 @@ void excluirHistorico( );
 void alterarHistorico ( );
   
 void realizarOperacoes ( );
+
+int verificarData( int dia, int mes, int ano );
+
 void listarMovimentacoes ( );
 void listarTodasOpercaoes ( );
 void excluirOperacao( ); 
@@ -832,8 +835,9 @@ void cadastraHistorico ( int codigo, int j ) {
 
 void realizarOperacoes  ( ) {
     system("cls"); 
-    int codigoOperacao, dia, i,j, ok=0;
-    int operacaoEncontrada = 0;float valorMovimentacao;
+    int codigoOperacao, dia, mes, ano, i, j, ok=0;
+    int operacaoEncontrada = 0, verificar;
+	float valorMovimentacao;
      
     printf("Codigo operacao: %d\n",movi);
 	 
@@ -846,18 +850,27 @@ void realizarOperacoes  ( ) {
     operacaoEncontrada = buscaHistorico(codigoOperacao);
     movimentacao[movi].historico = historico[(operacaoEncontrada)];
     movimentacao[movi].client = dadosClient (statusConta);
-    
   
     printf("Valor: \n");
     scanf("%f",&movimentacao[movi].valor);
   
     printf("Data dd/mm/aa\n");
     printf("Dia: ");
-    scanf("%d",&movimentacao[movi].data.dia);
+    scanf("%d",&dia);
     printf("Mes: ");
-    scanf("%d",&movimentacao[movi].data.mes);
+    scanf("%d",&mes);
     printf("Ano: ");
-    scanf("%d",&movimentacao[movi].data.ano);
+    scanf("%d",&ano);
+    
+    movimentacao[movi].data.dia = dia;
+    movimentacao[movi].data.mes = mes;
+    movimentacao[movi].data.ano = ano;
+    
+    verificar = verificarData( dia, mes, ano );
+	if(verificar){
+		printf("Limite desse dia excedido!! \n");
+		return;
+	}
   
     printf("Complemento: \n");
     scanf("%s",&movimentacao[movi].complemento);
@@ -870,6 +883,26 @@ void realizarOperacoes  ( ) {
     system("pause"); 
     system("cls");       
     menu( );
+}
+
+int verificarData( int dia, int mes, int ano ) {
+	int data = 1, i;
+	
+	if( movi > 0 ) {
+		for( i = 0; i < movi; i++ ) {
+			if( movimentacao[i].data.dia == dia &&
+			    movimentacao[i].data.mes == mes &&
+			    movimentacao[i].data.ano == ano ){
+
+				data++;
+			}
+		}
+	}
+
+	if( data <= QTDMAXDIA ) {
+		return 0; // não excedeu 
+	}
+	return 1; // excedeu 
 }
  
 void login ( ) {
