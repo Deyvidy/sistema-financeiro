@@ -32,6 +32,7 @@ typedef struct MOVIMENTACAO{
     float valor;
     char complemento[100];
     int status;
+    int cod;
 }Movimentacao;
    
 //Declara??o das structs 
@@ -470,7 +471,7 @@ void excluirOperacao( ) { // tem bug precisa arrumar
     for( i=0; i < movi; i++ ) {
         if( i == cod ) {
             ok = 1;
-                printf("Codigo da operacao: %d\n", i);  
+                printf("Codigo da operacao: %d\n", movimentacao[i].cod);  
                 printf("Descricao \t %s \n", movimentacao[i].historico.descricao);
                 printf("Data \t %d/ %d/%d \n",
                         movimentacao[i].data.dia,
@@ -488,17 +489,17 @@ void excluirOperacao( ) { // tem bug precisa arrumar
             printf("\nDeseja realmente exlucir? S/N:");
             scanf("%c",&resp);
             if ( ( resp == 'S' ) || ( resp == 's' ) ) {
-                for( j=i; j<his-1; j++ ) {
+                for( j=i; j < movi-1; j++ ) {
                      
-                i = i+1;
-                strcpy(movimentacao[i].historico.descricao, movimentacao[i+1].historico.descricao);
+                movimentacao[j].cod = movimentacao[j+1].cod;
+                strcpy(movimentacao[j].historico.descricao, movimentacao[j+1].historico.descricao);
                  
-                movimentacao[i].data.dia = movimentacao[i+1].data.dia;
-                movimentacao[i].data.mes = movimentacao[i+1].data.mes;
-                movimentacao[i].data.ano = movimentacao[i+1].data.ano;
-                movimentacao[i].historico.tipoDeTransacao = movimentacao[i+1].historico.tipoDeTransacao;                    
-                strcpy(movimentacao[i].complemento, movimentacao[i+1].complemento);
-                movimentacao[i].valor = movimentacao[i+1].valor;
+                movimentacao[j].data.dia = movimentacao[j+1].data.dia;
+                movimentacao[j].data.mes = movimentacao[j+1].data.mes;
+                movimentacao[j].data.ano = movimentacao[j+1].data.ano;
+                movimentacao[j].historico.tipoDeTransacao = movimentacao[j+1].historico.tipoDeTransacao;                    
+                strcpy(movimentacao[j].complemento, movimentacao[j+1].complemento);
+                movimentacao[j].valor = movimentacao[j+1].valor;
                  
                 }
                 movi--;
@@ -838,8 +839,10 @@ void realizarOperacoes  ( ) {
     int codigoOperacao, dia, mes, ano, i, j, ok=0;
     int operacaoEncontrada = 0, verificar;
 	float valorMovimentacao;
-     
-    printf("Codigo operacao: %d\n",movi);
+	
+    movimentacao[movi].cod = movi; 
+    printf("Codigo operacao: %d\n",movimentacao[movi].cod);
+    
 	 
     printf("Historicos:\n");
     consultarHistorico( );
@@ -868,7 +871,7 @@ void realizarOperacoes  ( ) {
     
     verificar = verificarData( dia, mes, ano );
 	if(verificar){
-		printf("Limite desse dia excedido!! \n");
+		printf("Limite para esse dia excedido!!\n");
 		return;
 	}
   
@@ -943,7 +946,7 @@ void listarMovimentacoes ( ) {
         for( i = 0; i < movi; i++ ) {
             if(movimentacao[i].client.codigo == dadosClient(statusConta).codigo){
                  
-                printf("Codigo da operacao: %d\n", i);
+                printf("Codigo da operacao: %d\n",movimentacao[i].cod);
                 printf("Descricao \t %s \n", movimentacao[i].historico.descricao);
                 printf("Data \t %d/ %d/%d \n",
                         movimentacao[i].data.dia,
@@ -974,7 +977,7 @@ void listarTodasOpercaoes ( ) {
         printf(" \n Lista de Movimentacoes \n \n");
         for( i = 0; i < movi; i++ ) {
             if(movimentacao[i].status == 1){
-                printf("Codigo da operacao: %d\n", i);  
+                printf("Codigo da operacao: %d\n", movimentacao[i].cod);  
                 printf("Descricao \t %s \n", movimentacao[i].historico.descricao);
                 printf("Data \t %d/ %d/%d \n",
                         movimentacao[i].data.dia,
